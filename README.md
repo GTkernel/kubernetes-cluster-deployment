@@ -29,20 +29,20 @@ The version I used is community one,`20.10.X`.
 
 **NOTE:** The content here refers to the [official webpage](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/), please get the packages based on your Linux distribution.
 
-   1) Get public key of APT repository
+   a) Get public key of APT repository
 
    ```
    $ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
    ```
 
-2) Update library
+b) Update library
 
 ```
   $ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 ```
 
 
-3) Install packages
+c) Install packages
 
     For master node:
 
