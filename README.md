@@ -5,7 +5,7 @@
 This documentation/installation steps is for building a small, private, and research-facing Kubernetes cluster.
  
 The most instructions refer to the [official document](https://kubernetes.io/docs/setup/).
-For the setup of Docker registry and Prometheus, we refer to the book of [DevOps with Kubernetes](https://github.com/PacktPublishing/DevOps-with-Kubernetes-Second-Edition)
+For the setup of Docker registry and Prometheus, we refer to the book of [DevOps with Kubernetes](https://github.com/PacktPublishing/DevOps-with-Kubernetes-Second-Edition).
 
 ## Hardware Specification
 
@@ -21,14 +21,39 @@ It is recommended to check the alternative ways for what fit better in your own 
 
 ## The installation of K8s cluster
 
-0. Install and setup Docker on every node
-1. Download packages
+0. Install Docker on every node
+
+The version I used is community one,`20.10.X`.
+
+1. Install commands and daemon
+
+**NOTE:** The content here refers to the [official webpage](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/), please get the packages based on your Linux distribution.
+
+    1) Get public key of APT repository
+
+    ```
+      $ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    ```
+
+    2) Update library
+    
+    ```
+      $ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    ```
+    
+
+    3) Install packages
+
+        For master node:
+
+        For worker node:
 
 2. Setup configuration files for Kubelet
 3. Start Kubelet
 4. Start K8s master node
-5. Install CNI --- Cilium
-: There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
+5. Install CNI -- Cilium
+
+**NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
 
 6. Join K8s worker node
 7. Verify the cluster 
