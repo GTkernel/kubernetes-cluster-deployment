@@ -1,4 +1,4 @@
-# Kubernetes deployment 
+# Kubernetes Deployment for Personal Cluster
 
 ## Introduction
 
@@ -29,24 +29,24 @@ The version I used is community one,`20.10.X`.
 
 **NOTE:** The content here refers to the [official webpage](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/), please get the packages based on your Linux distribution.
 
-    1) Get public key of APT repository
+1) Get public key of APT repository
 
-    ```
-      $ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    ```
+```
+  $ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+```
 
-    2) Update library
-    
-    ```
-      $ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-    ```
-    
+2) Update library
 
-    3) Install packages
+```
+  $ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+```
 
-        For master node:
 
-        For worker node:
+3) Install packages
+
+    For master node:
+
+    For worker node:
 
 2. Setup configuration files for Kubelet
 3. Start Kubelet
