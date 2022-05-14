@@ -29,24 +29,33 @@ The version I used is community one,`20.10.X`.
 
 **NOTE:** The content here refers to the [official webpage](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/), please get the packages based on your Linux distribution.
 
-   a) Get public key of APT repository
+a) Get public key of APT repository
 
-   ```
-   $ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-   ```
+```
+$ sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+```
 
 b) Update library
 
 ```
-  $ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-```
+$ echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
+$ sudo apt-get update
+```
 
 c) Install packages
 
     For master node:
+    ```
+    $ sudo apt-get install kubelet kubeadm kubectl
+    ```
 
     For worker node:
+    ```
+    $ sudo apt-get install kubelet kubeadm
+    ```
+
+Worker node doesn't require `kubectl` while we only send API calls from master. 
 
 2. Setup configuration files for Kubelet
 3. Start Kubelet
