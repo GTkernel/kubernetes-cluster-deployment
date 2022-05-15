@@ -49,7 +49,7 @@ Next, run the scripts to install `cri-dockerd` with systemd:
 $ sudo sh ./pre-kubeadm/install-cri.sh
 ```
 
-#### 1. Install commands and daemon
+#### 1. Install commands and daemon on every node
 
 **NOTE:** The content here refers to the [official webpage](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/), please get the packages based on your Linux distribution.
 
@@ -90,9 +90,36 @@ a) Check systemd parameters
 $ sudo vim /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 ```
 
+In this systemd config file of **kubelet** for **kubeadm**,
+we need to update/verify two parameters.
+For the first one, add one line to specify the config file for kubelet:
+```
+:
+Environment="KUBELET_CONFIG_ARGS=--config=$PATH_OF_YOUR_KUBELET_CONF_YAML"
+:
+```
+Also, put/update `pre-kubeadm/kubelet_v1_24.yaml` to the exact path of `$PATH_OF_YOUR_KUBELET_CONF_YAML`.
+
+For the second one, there is specified an additional environment file as following (should be already listed)
+```
+:
+EnvironmentFile=-/etc/default/kubelet
+:
+```
+
+Now, your systemd config file should look similar like `./pre-kubeadm/systemd_setup`.
+
 b) Add the additional variable file for configuration
 
+While nodes are connected by private networking, we need to specify private IP, 
+separately on every node, in the environment file mentioned in last step.
 
+Specify the node's private ip as following:
+```
+$ sudo vim /etc/default/kubelet
+
+KUBELET_EXTRA_ARGS=--node-ip=$PRIVATE_IP
+```
 
 
 #### 3. Start Kubelet
@@ -102,6 +129,9 @@ Now you can start Kubelet daemon on every node.
 $ sudo systemctl enable kubelet
 $ sudo systemctl start kubelet
 ```
+
+**TIPS:** For anytime you want to restart the daemons, had better following the order of this: 
+docker, cri-docker, then kubelet. 
 
 #### 4. Start K8s master node
 
@@ -129,9 +159,13 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 **NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
 
 On master node, run following script to install Cilium.
+**NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cilium/helm_v1_11_4.sh`, 
+before you run it.
 ```
 $ sh cilium/helm_v1_11_4.sh
 ```
+
+After you successfully run the Cilium installation by helm, your control plane would looks similar as following (in case of without **kube-proxy**):
 
 ```
 $ kubectl get pod -n kube-system
@@ -147,13 +181,15 @@ kube-controller-manager-granite   1/1     Running   0          24m
 kube-scheduler-granite            1/1     Running   0          24m
 ```
 
+Let's verify the Cilium's setup status:
+
 ```
 $ kubectl exec -it -n kube-system cilium-n4n9d -- cilium status
 Defaulted container "cilium-agent" out of: cilium-agent, mount-cgroup (init), clean-cilium-state (init)
 KVStore:                Ok   Disabled
 Kubernetes:             Ok   1.24 (v1.24.0) [linux/amd64]
 Kubernetes APIs:        ["cilium/v2::CiliumClusterwideNetworkPolicy", "cilium/v2::CiliumEndpoint", "cilium/v2::CiliumNetworkPolicy", "cilium/v2::CiliumNode", "core/v1::Namespace", "core/v1::Node", "core/v1::Pods", "core/v1::Service", "discovery/v1::EndpointSlice", "networking.k8s.io/v1::NetworkPolicy"]
-KubeProxyReplacement:   Strict   [eno1 192.168.1.191 (Direct Routing)]
+KubeProxyReplacement:   Strict   [eno1 $MASTER_PRIVATE_IP (Direct Routing)]
 Host firewall:          Disabled
 Cilium:                 Ok   1.11.4 (v1.11.4-9d25463)
 NodeMonitor:            Listening for events on 8 CPUs with 64x4096 of shared memory
@@ -168,10 +204,23 @@ Hubble:                 Ok   Current/Max Flows: 674/4095 (16.46%), Flows/s: 0.20
 Encryption:             Disabled
 Cluster health:         1/1 reachable   (2022-05-15T17:27:48Z)
 ```
+It showes Cilium agent (on master node) is functional with proxy support. 
 
 #### 6. Join K8s worker node
+
+To add worker nodes in cluster, fire this join command, which covers part of the one we copid at step 4.
+
+```
+$ sudo kubeadm join $MASTER_PRIVATE_IP:6443 --token $TOKEN --discovery-token-ca-cert-hash $SHA256_CERT --ignore-preflight-errors=Swap --cri-socket unix:///var/run/cri-dockerd.sock
+```
+
 #### 7. Verify the cluster 
 
+Now, you can check if your nodes are all shown "Ready" on master node:
+
+```
+$ kubectl get node
+```
 
 ## The installation of private Docker registry
 
