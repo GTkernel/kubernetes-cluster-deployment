@@ -1,0 +1,12 @@
+apiVersion: "v1"
+kind: "PersistentVolume"
+metadata:
+  name: prom-pv
+spec:
+  capacity:
+    storage: "10Gi"
+  accessModes:
+    - "ReadWriteOnce"
+  nfs:
+    path: "$NFS_DIR_FOR_PROM_STORAGE"
+    server: "$NFS_SERVER_IP"

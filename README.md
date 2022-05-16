@@ -116,8 +116,8 @@ $ sudo systemctl enable kubelet
 $ sudo systemctl start kubelet
 ```
 
-**TIPS:** For anytime you want to restart the daemons, had better following the order of this: 
-docker, cri-docker, then kubelet. 
+[//]: <> (**TIPS:** For anytime you want to restart the daemons, had better following the order of this: 
+docker, cri-docker, then kubelet.)
 
 #### 4. Start K8s master node
 
@@ -161,10 +161,10 @@ cilium-operator-f4c69945c-2lntd   1/1     Running   0          40s
 cilium-operator-f4c69945c-f2jpv   0/1     Pending   0          40s
 coredns-64897985d-6kn5r           1/1     Running   0          3m6s
 coredns-64897985d-kzbtq           1/1     Running   0          3m6s
-etcd-granite                      1/1     Running   1          3m11s
-kube-apiserver-granite            1/1     Running   1          3m12s
-kube-controller-manager-granite   1/1     Running   1          3m11s
-kube-scheduler-granite            1/1     Running   1          3m10s
+etcd-granite                      1/1     Running   0          3m11s
+kube-apiserver-granite            1/1     Running   0          3m12s
+kube-controller-manager-granite   1/1     Running   0          3m11s
+kube-scheduler-granite            1/1     Running   0          3m10s
 ```
 
 Let's verify the Cilium's setup status:
@@ -245,9 +245,59 @@ $ kubectl create secret generic registry-secrets --from-file secrets/
 $ kubectl create -f docker-registry/registry.yaml
 ```
 
+#### 5. Login registry on every node
+
 ## The installation of Prometheus 
 
-Optionally, you can install node exporters for getting metrics about the host.
+Optionally, you can install node exporters for getting metrics about the host. 
+The deployment config files are under `./prometheus`
 
+#### 1. Create namespace, monitoring
+
+```
+$ kubectl create -f prometheus/namespace.yaml
+```
+
+#### 2. Deploy service configuration of Prometheus
+
+```
+$ kubectl create -f prometheus/config/k8s.yaml
+```
+
+#### 3. Deploy other resources, including the container of Prometheus
+
+This command would deploy all resources under the directory.
+
+```
+$ kubectl create -f prometheus/deploy/
+```
+
+#### 4. Optionally, deploy the node exporter for host metrics
+
+```
+$ kubectl create -f prometheus/node-exporter/node-exporter.yaml
+```
+
+
+#### 5. Verify the deployment 
+
+```
+$ kubectl get pod -n monitoring
+NAME                          READY   STATUS    RESTARTS   AGE
+node-exporter-4jdzz           1/1     Running   0          6s
+node-exporter-hnggh           1/1     Running   0          6s
+node-exporter-kvlfj           1/1     Running   0          6s
+node-exporter-nzqq6           1/1     Running   0          6s
+prometheus-6dbf95cb45-5nc8d   1/1     Running   0          63s
+
+$ kubectl get service -n monitoring
+NAME             TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+prometheus-svc   NodePort   10.109.166.156   <none>        9090:32351/TCP   5m11s
+
+$ curl localhost:32351
+<a href="/graph">Found</a>.
+```
+
+Now, you can access Prometheus's webUI through the public IP of master nodes with the port, 32351, in this case.
 
 ## Port forwarding for public-facing services
