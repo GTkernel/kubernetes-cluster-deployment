@@ -100,7 +100,7 @@ b) Add the additional variable file for configuration
 While nodes are connected by private networking, we need to specify private IP, 
 separately on every node, in the environment file mentioned in last step.
 
-Specify the node's private ip as following:
+Specify the node's private ip as following: (skip this if you want to communicate nodes by public IP)
 ```
 $ sudo vim /etc/default/kubelet
 
@@ -122,7 +122,8 @@ docker, cri-docker, then kubelet.)
 #### 4. Start K8s master node
 
 Here, I choose to use Cilium agent's functionality to replace **kube-proxy**. 
-If you want to keep **kube-proxy**, you don't need to add the flag `--skip-phases=addon/kube-proxy`
+If you want to keep **kube-proxy**, you don't need to add the flag `--skip-phases=addon/kube-proxy`.
+If you want to use master's public IP for in-cluster communication, bypass the flag `--apiserver-advertise-address`.
 
 ```
 $ sudo kubeadm init --ignore-preflight-errors=Swap --apiserver-advertise-address=$MASTER_PRIVATE_IP --skip-phases=addon/kube-proxy
@@ -198,7 +199,7 @@ It showes Cilium agent (on master node) is functional with proxy support.
 To add worker nodes in cluster, fire this join command, which covers part of the one we copid at step 4.
 
 ```
-$ sudo kubeadm join $MASTER_PRIVATE_IP:6443 --token $TOKEN --discovery-token-ca-cert-hash $SHA256_CERT --ignore-preflight-errors=Swap 
+$ sudo kubeadm join $MASTER_IP:6443 --token $TOKEN --discovery-token-ca-cert-hash $SHA256_CERT --ignore-preflight-errors=Swap 
 ```
 
 #### 7. Verify the cluster 
@@ -315,7 +316,31 @@ prometheus-svc   NodePort   10.109.166.156   <none>        9090:32351/TCP   5m11
 $ curl localhost:32351
 <a href="/graph">Found</a>.
 ```
+If your K8s networking is on private CIDR like our setup, to access the webUI of Prometheus
+by browser, you would need to do IP forwarding (next section).
+Otherwise, you can access any public IP of the cluster with the port, 32351, in this case.
 
-Now, you can access Prometheus's webUI through the public IP of master node with the port, 32351, in this case.
 
 ## Port forwarding for public-facing services
+
+As mentioned in the section of environement specification, my cluster only has on public IP on master,
+other nodes only has private IP.
+
+For building NAT, you can run the script `./port-forwarding/nat_rule.sh` on master. 
+It helps to create a virtual NIC with private IP, and the rules to forward the egress traffic of worker nodes to Internet.
+
+On the other hand, while K8s cluster networking is built on private network,
+to expose certain K8s Service, we need to forward the traffic between public NIC/IP and private NIC/IP by ourselves 
+(CNI doesn't manage host network for sure).
+
+Therefore, I prepare the other script `./port-forwarding/service_forward.sh`.
+Like the Prometheus case mentioned in last section, you would need to add parameters like below:
+
+```
+#!/bin/bash
+
+NPORT=32351
+CPORT=9090
+HOST_PIP=$ANY_WORKER_IP
+```
+After running it on master, you can access Prometheus's webUI through the master's public IP with node port 32351.
