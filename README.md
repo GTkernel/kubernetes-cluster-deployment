@@ -19,7 +19,7 @@ It is recommended to check the alternative ways for what fit better in your own 
 - Clusters are set with NAT and NFS, so the worker nodes can access public traffic, and configuration files are sharable.
 - For any configuration template, you may check and change it to fit your environment.
 [//]: <> (- Please make sure **Docker** engine and **Go** are installed on every host, and additionally, **helm** on master.)
-- Please make sure **Docker** engine on every host, and additionally, **helm** on master.
+- Please make sure **Docker** engine on every host, and additionally, [helm](https://helm.sh/docs/intro/install/) on master.
 
 ## The installation of K8s cluster
 
@@ -146,6 +146,7 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 **NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
 
 On master node, run following script to install Cilium.
+
 **NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cilium/helm_v1_11_4.sh`, 
 before you run it.
 ```
