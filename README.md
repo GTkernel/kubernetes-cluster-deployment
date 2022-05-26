@@ -259,7 +259,7 @@ domain.crt
 
 $ sudo update-ca-certificates
 
-$ sudo service docker restart
+$ sudo systemctl restart docker
 ```
 Now, you can login the private registry with the basic authentication specified in step 3: `$USER_NAME` and `$PASSWORD`.
 
