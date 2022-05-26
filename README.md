@@ -267,6 +267,14 @@ Now, you can login the private registry with the basic authentication specified 
 $ docker login $MASTER_HOSTNAME:30500
 ```
 
+**TIPS:** If you get following message when runnging `docker login`,
+
+```
+x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0
+```
+add this flag `-addext "subjectAltName = DNS:$MASTER_HOSTNAME"` when you create `domain.crt`.
+
+
 ## The installation of Prometheus 
 
 Optionally, you can install node exporters for getting metrics about the host. 
