@@ -124,9 +124,10 @@ docker, cri-docker, then kubelet.)
 Here, I choose to use Cilium agent's functionality to replace **kube-proxy**. 
 If you want to keep **kube-proxy**, you don't need to add the flag `--skip-phases=addon/kube-proxy`.
 If you want to use master's public IP for in-cluster communication, bypass the flag `--apiserver-advertise-address`.
+Here, we configure K8s networking CIDR to prevent conflicts of CNI default settings and our host private network (e.g. `K8S_NETWORK_CIDR=10.0.0.0/16`).
 
 ```
-$ sudo kubeadm init --ignore-preflight-errors=Swap --apiserver-advertise-address=$MASTER_PRIVATE_IP --skip-phases=addon/kube-proxy
+$ sudo kubeadm init --ignore-preflight-errors=Swap --apiserver-advertise-address=$MASTER_PRIVATE_IP --skip-phases=addon/kube-proxy --pod-network-cidr=$K8S_NETWORK_CIDR
 ```
 
 **IMPORTANT:** Now, copy the last log shown on your screen, the line starts from `kubeadm join ...`.
@@ -140,6 +141,33 @@ $ mkdir -p $HOME/.kube
 $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ``` 
+#### 5. Install CNI -- Calico
+
+**NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Calico only.
+
+We refer to the [official tutorial](https://projectcalico.docs.tigera.io/getting-started/kubernetes/self-managed-onprem/onpremises) for Calico setup for the personal cluster.
+
+Create Calico components by following command on master node:
+
+```
+$ kubectl create -f cni/calico_v3_23_2.yaml
+```
+
+Then, you can check the starting status as following:
+
+```
+$ kubectl get pod -n kube-system
+NAME                                       READY   STATUS              RESTARTS   AGE
+calico-kube-controllers-7bc6547ffb-dpd8b   0/1     ContainerCreating   0          18s
+calico-node-bk947                          0/1     Running             0          18s
+coredns-64897985d-lg7gr                    0/1     ContainerCreating   0          6m35s
+coredns-64897985d-vcp78                    0/1     ContainerCreating   0          6m35s
+etcd-gabbro                                1/1     Running             7          6m49s
+kube-apiserver-gabbro                      1/1     Running             0          6m49s
+kube-controller-manager-gabbro             1/1     Running             0          6m51s
+kube-proxy-z4xxr                           1/1     Running             0          6m36s
+kube-scheduler-gabbro                      1/1     Running             0          6m49s
+```
 
 #### 5. Install CNI -- Cilium
 
@@ -147,10 +175,10 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 On master node, run following script to install Cilium.
 
-**NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cilium/helm_v1_11_4.sh`, 
+**NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cni/cilium_v1_11_4.sh`, 
 before you run it.
 ```
-$ sh cilium/helm_v1_11_4.sh
+$ sh cni/cilium_v1_11_4.sh
 ```
 
 After you successfully run the Cilium installation by helm, your control plane would looks similar as following (in case of without **kube-proxy**):
@@ -209,6 +237,14 @@ Now, you can check if your nodes are all shown "Ready" on master node:
 
 ```
 $ kubectl get node
+```
+
+#### 8. Untaint control plane nodes  
+
+Optionally, you can choose to get control plane nodes to be scheduled with general applications.
+
+```
+$ kubectl taint nodes --all node-role.kubernetes.io/control-plane node-role.kubernetes.io/master-
 ```
 
 ## The installation of private Docker registry
