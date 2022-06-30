@@ -160,16 +160,20 @@ Then, you can check the starting status as following:
 ```
 $ kubectl get pod -n kube-system
 NAME                                       READY   STATUS              RESTARTS   AGE
-calico-kube-controllers-7bc6547ffb-dpd8b   0/1     ContainerCreating   0          18s
-calico-node-bk947                          0/1     Running             0          18s
-coredns-64897985d-lg7gr                    0/1     ContainerCreating   0          6m35s
-coredns-64897985d-vcp78                    0/1     ContainerCreating   0          6m35s
-etcd-gabbro                                1/1     Running             7          6m49s
-kube-apiserver-gabbro                      1/1     Running             0          6m49s
-kube-controller-manager-gabbro             1/1     Running             0          6m51s
-kube-proxy-z4xxr                           1/1     Running             0          6m36s
-kube-scheduler-gabbro                      1/1     Running             0          6m49s
+calico-kube-controllers-7bc6547ffb-bgxb4   1/1     Running             0          30s
+calico-node-wp8dz                          1/1     Running             0          30s
+coredns-64897985d-fm7fj                    0/1     ContainerCreating   0          2m54s
+coredns-64897985d-nj6m4                    0/1     ContainerCreating   0          2m54s
+etcd-gabbro                                1/1     Running             8          3m7s
+kube-apiserver-gabbro                      1/1     Running             1          3m7s
+kube-controller-manager-gabbro             1/1     Running             1          3m7s
+kube-proxy-jxpsn                           1/1     Running             0          2m54s
+kube-proxy-pg2q2                           1/1     Running             0          117s
+kube-scheduler-gabbro                      1/1     Running             1          3m7s
 ```
+
+It is correct that CoreDNS is in `ContainerCreating` state, because it needs to wait any worker node to be ready.
+Check it again after you add other node in cluster.
 
 #### 5. Install CNI -- Cilium
 
