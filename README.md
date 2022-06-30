@@ -18,7 +18,9 @@ It is recommended to check the alternative ways for what fit better in your own 
 - Only master node has the public IP, in-cluster communication goes through private network (e.g. `192.168.1.0/24`).
 - Clusters are set with NAT and NFS, so the worker nodes can access public traffic, and configuration files are sharable.
 - For any configuration template, you may check and change it to fit your environment.
+
 [//]: <> (- Please make sure **Docker** engine and **Go** are installed on every host, and additionally, **helm** on master.)
+
 - Please make sure **Docker** engine on every host, and additionally, [helm](https://helm.sh/docs/intro/install/) on master.
 
 ## The installation of K8s cluster
