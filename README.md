@@ -175,6 +175,12 @@ kube-scheduler-gabbro                      1/1     Running             1        
 It is correct that CoreDNS is in `ContainerCreating` state, because it needs to wait any worker node to be ready.
 Check it again after you add other node in cluster.
 
+Still, if your networking environment is like ours, having several IP/CIDR on host, you would need to specify the primary K8s node IP for configuring BGP.
+
+```
+$ kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=kubernetes-internal-ip
+```
+
 #### 5. Install CNI -- Cilium
 
 **NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
