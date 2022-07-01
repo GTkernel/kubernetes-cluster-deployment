@@ -15,6 +15,9 @@ It is recommended to check the alternative ways for what fit better in your own 
 - Four nodes with Intel i7 (4 cores) and 32 GB RAM.
 - Nodes are connected by 10 GB Ethernet switch.
 - All nodes are **Ubuntu 18.04**.
+
+**NOTE** For Ubuntu, please stop `systemd-resolved` first to prevent it affect the K8s DNS policy, because kubeadm detects it and adjuests kubelet automatically.
+
 - Only master node has the public IP, in-cluster communication goes through private network (e.g. `192.168.1.0/24`).
 - Clusters are set with NAT and NFS, so the worker nodes can access public traffic, and configuration files are sharable.
 - For any configuration template, you may check and change it to fit your environment.
