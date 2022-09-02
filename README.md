@@ -22,22 +22,22 @@ It is recommended to check the alternative ways for what fit better in your own 
 - Clusters are set with NAT and NFS, so the worker nodes can access public traffic, and configuration files are sharable.
 - For any configuration template, you may check and change it to fit your environment.
 
-[//]: <> (- Please make sure **Docker** engine and **Go** are installed on every host, and additionally, **helm** on master.)
-
 - Please make sure **Docker** engine on every host, and additionally, [helm](https://helm.sh/docs/intro/install/) on master.
 
 ## The installation of K8s cluster
 
 Kubernetes v1.24 officially [removes dockershim](https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/).
 For the best familiarity of our operations, we still use Docker as container runtime. 
-However, we still face issues with the integration of `cri-docker` and Cilium. 
-So currently, we downgrade with **v1.23.6**.
+However, we still face issues with the integration of `cri-dockerd` and Cilium. 
+So currently, we only verified Kubernetes v1.25.0 with WeaveNet as the CNI.
+If you prefer to install other CNIs, you would need to verify the network settings or just downgrade Kubernetes installation to **v1.23**.
 
-[//]: <> (#### 0. Install Docker and its CRI on every node)
-
-#### 0. Install Docker on every node
+#### 0. Install Docker on every node, and CRI if required
 
 The Docker version I used is **1.5**.
+
+Next, if you plan to install Kubernetes with version higher than v1.23, you will need to install container runtime interface (CRI).
+Here, we follow the official instruction of cri-dockerd. Please refer to its [README](https://github.com/Mirantis/cri-dockerd) for the installation.
 
 
 #### 1. Install commands and daemon on every node
@@ -237,6 +237,14 @@ Cluster health:         1/1 reachable   (2022-05-16T04:35:13Z)
 ```
 
 It showes Cilium agent (on master node) is functional with proxy support. 
+
+#### 5. Install CNI -- WeaveNet
+
+Create WeaveNet components by following command on master node:
+
+```
+$ kubectl create -f cni/weavenet_v2_8_1.yml
+```
 
 #### 6. Join K8s worker node
 
