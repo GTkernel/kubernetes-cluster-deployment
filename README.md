@@ -134,6 +134,12 @@ Here, we configure K8s networking CIDR to prevent conflicts of CNI default setti
 ```
 $ sudo kubeadm init --ignore-preflight-errors=Swap --apiserver-advertise-address=$MASTER_PRIVATE_IP --skip-phases=addon/kube-proxy --pod-network-cidr=$K8S_NETWORK_CIDR
 ```
+Or, for v1.24 or higher version Kubernetes, need to add the tag `--cri-socket`. 
+
+```
+$ sudo kubeadm init --ignore-preflight-errors=Swap --apiserver-advertise-address=$MASTER_PRIVATE_IP --cri-socket=unix:///var/run/cri-dockerd.sock
+```
+
 
 **IMPORTANT:** Now, copy the last log shown on your screen, the line starts from `kubeadm join ...`.
 This command has the credential (standing for 1 day by default) for the first handshake between master and worker. 
@@ -269,6 +275,28 @@ Optionally, you can choose to get control plane nodes to be scheduled with gener
 ```
 $ kubectl taint nodes --all node-role.kubernetes.io/control-plane node-role.kubernetes.io/master-
 ```
+
+#### 9. Join worker node after kubeadm token is expired
+
+The token of kubeadm will be expired after 24h. 
+If you want to add new work node after that period, you need to create a new one, and join your new worker with it.
+
+```
+// on master node
+$ sudo kubeadm token create
+$NEW_TOKEN
+
+// you can check it shown on the list
+$ sudo kubeadm token list
+
+```
+Then, you use the token just created on the new worker.
+
+```
+// on worker node
+$ sudo kubeadm join $MASTER_IP:6443 --token $NEW_TOKEN --ignore-preflight-errors=Swap --discovery-token-unsafe-skip-ca-verification
+```
+
 
 ## The installation of private Docker registry
 
