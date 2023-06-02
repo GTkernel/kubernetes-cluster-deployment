@@ -1,8 +1,29 @@
 #!/bin/bash
 
-NPORT=  #e.g. 31499
-CPORT=  #e.g. 9090
-HOST_PIP= #e.g. 192.168.1.100
+# Object Detect
+#NPORT=30851
+#CPORT=8501
+#HOST_PIP=192.168.1.161 #e.g. 192.168.1.100
+
+#### ROS 
+#NPORT=30311
+#CPORT=11311
+#HOST_PIP=192.168.1.100 #e.g. 192.168.1.100
+
+### Video360
+#NPORT=31500
+#CPORT=9500
+#HOST_PIP=192.168.1.100 #e.g. 192.168.1.100
+
+##### Prom
+#NPORT=31552
+#CPORT=9090
+#HOST_PIP=192.168.1.161 #e.g. 192.168.1.100
+
+# FleXR
+NPORT=30909
+CPORT=9900
+HOST_PIP=192.168.1.161 #e.g. 192.168.1.100
 
 #Accept to forward service traffic to gtue
 iptables -I FORWARD -d $HOST_PIP -m tcp -p tcp --dport $NPORT -j ACCEPT

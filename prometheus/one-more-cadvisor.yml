@@ -8,9 +8,9 @@ metadata:
 data:
   prometheus.yml: |-
     global:
-      scrape_interval:     15s
-      evaluation_interval: 1m
-      scrape_timeout: 15s
+      scrape_interval:     10ms
+      evaluation_interval: 20ms
+      scrape_timeout: 10ms
 
     scrape_configs:
     # exchange node-exporter's "instance" label to have hostname as value
@@ -27,6 +27,10 @@ data:
         static_configs:
         - targets: ['localhost:9090']
 
+      - job_name:  'standalone-cadvisor'
+        static_configs:
+        - targets: ['cadvisor:8080']
+        
       # see: https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml
       # and: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>
       - job_name: 'k8s-apiservers'

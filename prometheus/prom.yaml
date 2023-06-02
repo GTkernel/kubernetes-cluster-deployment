@@ -17,6 +17,8 @@ spec:
       labels:
         app: prometheus
     spec:
+      nodeName: gtue-desktop
+#      nodeName: basalt
       serviceAccountName: prometheus
       containers:
       - image: quay.io/prometheus/prometheus:v2.31.1
@@ -32,8 +34,8 @@ spec:
         - containerPort: 9090
           name: prom-port
         resources:
-          limits:
-            memory: 1Gi
+#          limits:
+#            memory: 1Gi
           requests:
             cpu: 200m
             memory: 1Gi

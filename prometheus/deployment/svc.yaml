@@ -13,3 +13,4 @@ spec:
   - name: prometheus
     protocol: TCP
     port: 9090
+    nodePort: 31552

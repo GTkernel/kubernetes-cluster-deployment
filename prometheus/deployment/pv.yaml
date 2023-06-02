@@ -8,5 +8,5 @@ spec:
   accessModes:
     - "ReadWriteOnce"
   nfs:
-    path: "$NFS_DIR_FOR_PROM_STORAGE"
-    server: "$NFS_SERVER_IP"
+    path: "/mnt/prometheus/"
+    server: "143.215.128.212"

@@ -14,7 +14,7 @@ It is recommended to check the alternative ways for what fit better in your own 
 
 - Four nodes with Intel i7 (4 cores) and 32 GB RAM.
 - Nodes are connected by 10 GB Ethernet switch.
-- All nodes are **Ubuntu 18.04**.
+- All nodes are **Ubuntu 22.04**.
 
 **NOTE** For Ubuntu, please stop `systemd-resolved` first to prevent it affect the K8s DNS policy, because kubeadm detects it and adjuests kubelet automatically.
 
@@ -64,12 +64,12 @@ Worker node doesn't require **kubectl** while we only send API calls from master
 
   For master node:
 ```
-$ sudo apt-get install kubelet=1.23.6-00 kubeadm=1.23.6-00 kubectl=1.23.6-00
+$ sudo apt-get install kubelet=1.23.17-00 kubeadm=1.23.17-00 kubectl=1.23.17-00
 ```
 
   For worker node:
 ```
-$ sudo apt-get install kubelet=1.23.6-00 kubeadm=1.23.6-00
+$ sudo apt-get install kubelet=1.23.17-00 kubeadm=1.23.17-00
 ```
 
 
@@ -196,7 +196,7 @@ $ kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=k
 
 On master node, run following script to install Cilium.
 
-**NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cni/cilium_v1_11_4.sh`, 
+**NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cni/cilium_v1_11_4.sh` (now updated to 1.13.3), 
 before you run it.
 ```
 $ sh cni/cilium_v1_11_4.sh
