@@ -10,4 +10,5 @@ helm install linkerd-control-plane \
   --set-file identityTrustAnchorsPEM=./secrets/ca.crt \
   --set-file identity.issuer.tls.crtPEM=./secrets/issuer.crt \
   --set-file identity.issuer.tls.keyPEM=./secrets/issuer.key \
+  --set proxyInit.runAsRoot=true \
   linkerd/linkerd-control-plane
