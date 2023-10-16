@@ -24,8 +24,7 @@ It is recommended to check the alternative ways for what fit better in your own 
 
 - Please make sure **Docker** engine on every host, and additionally, [helm](https://helm.sh/docs/intro/install/) on master.
 
-<details>
-<summary>## The installation of K8s cluster</summary>
+## The installation of K8s cluster
 
 Kubernetes v1.24 officially [removes dockershim](https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/).
 For the best familiarity of our operations, we still use Docker as container runtime. 
@@ -33,6 +32,8 @@ However, we still face issues with the integration of `cri-dockerd` and Cilium.
 So currently, we only verified Kubernetes v1.25.0 with WeaveNet as the CNI.
 If you prefer to install other CNIs, you would need to verify the network settings or just downgrade Kubernetes installation to **v1.23**.
 
+<details>
+<summary>Setup steps as following</summary>
 #### 0. Install Docker on every node, and CRI if required
 
 The Docker version I used is **1.5**.
@@ -159,7 +160,9 @@ $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 We refer to the [official tutorial](https://projectcalico.docs.tigera.io/getting-started/kubernetes/self-managed-onprem/onpremises) for Calico setup for the personal cluster.
 
-Create Calico components by following command on master node:
+
+<details>
+<summary>Create Calico components by following command on master node:</summary>
 
 ```
 $ kubectl create -f cni/calico_v3_23_2.yaml
@@ -190,6 +193,7 @@ Still, if your networking environment is like ours, having several IP/CIDR on ho
 ```
 $ kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=kubernetes-internal-ip
 ```
+</details>
 
 #### 5. Install CNI -- Cilium
 
@@ -302,8 +306,10 @@ $ sudo kubeadm join $MASTER_IP:6443 --token $NEW_TOKEN --ignore-preflight-errors
 
 ## The installation of private Docker registry
 
+Following steps work with the directory `./docker-registry`
+
 <details>
-<summary>Following steps work with the directory `./docker-registry`.</summary>
+<summary>Check it out!</summary>
 
 #### 1. Create the PresistentVolume (PV) on NFS
 
@@ -371,6 +377,8 @@ add this flag `-addext "subjectAltName = DNS:$MASTER_HOSTNAME"` when you create 
 Optionally, you can install node exporters for getting metrics about the host. 
 The deployment config files are under `./prometheus`
 
+<details>
+<summary>Check it out!</summary>
 #### 1. Create namespace, monitoring
 
 ```
@@ -420,6 +428,7 @@ If your K8s networking is on private CIDR like our setup, to access the webUI of
 by browser, you would need to do IP forwarding (next section).
 Otherwise, you can access any public IP of the cluster with the port, 32351, in this case.
 
+</details>
 
 ## Port forwarding for public-facing services
 
