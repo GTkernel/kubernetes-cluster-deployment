@@ -33,7 +33,8 @@ So currently, we only verified Kubernetes v1.25.0 with WeaveNet as the CNI.
 If you prefer to install other CNIs, you would need to verify the network settings or just downgrade Kubernetes installation to **v1.23**.
 
 <details>
-<summary>Setup steps as following</summary>
+<summary>Setup steps as following:</summary>
+
 #### 0. Install Docker on every node, and CRI if required
 
 The Docker version I used is **1.5**.
@@ -153,10 +154,12 @@ Next, setup the command line interface on master for management and deployment.
 $ mkdir -p $HOME/.kube
 $ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 $ sudo chown $(id -u):$(id -g) $HOME/.kube/config
-``` 
+```
+
+ 
 #### 5. Install CNI -- Calico
 
-**NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Calico only.
+**NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Calico (or the other CNIs introduced below) only.
 
 We refer to the [official tutorial](https://projectcalico.docs.tigera.io/getting-started/kubernetes/self-managed-onprem/onpremises) for Calico setup for the personal cluster.
 
@@ -197,9 +200,9 @@ $ kubectl set env daemonset/calico-node -n kube-system IP_AUTODETECTION_METHOD=k
 
 #### 5. Install CNI -- Cilium
 
-**NOTE:** There are several [CNI solutions](https://github.com/containernetworking/cni) you can play with, no necessary to stick to Cilium only.
 
-On master node, run following script to install Cilium.
+<details>
+<summary>On master node, run following script to install Cilium.</summary>
 
 **NOTE AGAIN:** If you want to keep **kube-proxy**, remove the parameter `--set kubeProxyReplacement=strict` in the file, `cni/cilium_v1_11_4.sh` (now updated to 1.13.3), 
 before you run it.
@@ -248,14 +251,18 @@ Cluster health:         1/1 reachable   (2022-05-16T04:35:13Z)
 ```
 
 It showes Cilium agent (on master node) is functional with proxy support. 
+</details>
 
 #### 5. Install CNI -- WeaveNet
 
-Create WeaveNet components by following command on master node:
+
+<details>
+<summary>Create WeaveNet components by following command on master node:</summary>
 
 ```
 $ kubectl create -f cni/weavenet_v2_8_1.yml
 ```
+</details>
 
 #### 6. Join K8s worker node
 
@@ -379,6 +386,7 @@ The deployment config files are under `./prometheus`
 
 <details>
 <summary>Check it out!</summary>
+
 #### 1. Create namespace, monitoring
 
 ```
@@ -428,6 +436,14 @@ If your K8s networking is on private CIDR like our setup, to access the webUI of
 by browser, you would need to do IP forwarding (next section).
 Otherwise, you can access any public IP of the cluster with the port, 32351, in this case.
 
+</details>
+
+## The installation of Service Mesh
+
+Currently, `./service-mesh` only provide **Linkerd** as the only setup material.
+
+<details>
+<summary>Check it out!</summary>
 </details>
 
 ## Port forwarding for public-facing services
