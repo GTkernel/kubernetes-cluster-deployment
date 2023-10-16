@@ -444,6 +444,21 @@ Currently, `./service-mesh` only provide **Linkerd** as the only setup material.
 
 <details>
 <summary>Check it out!</summary>
+
+#### 1. Create certificate files
+
+Follow the [official instruction](https://linkerd.io/2.14/tasks/generate-certificates/) to create certificate files for the proxy processes.
+It will ask you to install [`step` CLI](https://smallstep.com/docs/step-cli/).
+After then, put the generated files in `./service-mesh/secrets`, so the script in next step could find them.
+
+#### 2. Run the script to create CRD and components by Helm
+
+```
+$ cd service-mesh
+
+$ sh linkerd_v2_14_1.sh
+```
+
 </details>
 
 ## Port forwarding for public-facing services
