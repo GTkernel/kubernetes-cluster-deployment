@@ -24,7 +24,8 @@ It is recommended to check the alternative ways for what fit better in your own 
 
 - Please make sure **Docker** engine on every host, and additionally, [helm](https://helm.sh/docs/intro/install/) on master.
 
-## The installation of K8s cluster
+<details>
+<summary>## The installation of K8s cluster</summary>
 
 Kubernetes v1.24 officially [removes dockershim](https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/).
 For the best familiarity of our operations, we still use Docker as container runtime. 
@@ -296,11 +297,13 @@ Then, you use the token just created on the new worker.
 // on worker node
 $ sudo kubeadm join $MASTER_IP:6443 --token $NEW_TOKEN --ignore-preflight-errors=Swap --discovery-token-unsafe-skip-ca-verification
 ```
+</details>
 
 
 ## The installation of private Docker registry
 
-Following steps work with the directory `./docker-registry`.
+<details>
+<summary>Following steps work with the directory `./docker-registry`.</summary>
 
 #### 1. Create the PresistentVolume (PV) on NFS
 
@@ -360,6 +363,7 @@ $ docker login $MASTER_HOSTNAME:30500
 x509: certificate relies on legacy Common Name field, use SANs or temporarily enable Common Name matching with GODEBUG=x509ignoreCN=0
 ```
 add this flag `-addext "subjectAltName = DNS:$MASTER_HOSTNAME"` when you create `domain.crt`.
+</details>
 
 
 ## The installation of Prometheus 
