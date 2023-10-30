@@ -404,7 +404,11 @@ $ kubectl create -f prometheus/config/k8s.yaml
 This command would deploy all resources under the directory.
 
 ```
+//Deploying necessary K8s resources before running the main server pod
 $ kubectl create -f prometheus/deploy/
+
+//After making sure the above components are done
+$ kubectl create -f prometheus/prom.yaml
 ```
 
 #### 4. Optionally, deploy the node exporter for host metrics
@@ -438,7 +442,7 @@ Otherwise, you can access any public IP of the cluster with the port, 32351, in 
 
 </details>
 
-## The installation of Service Mesh
+## The installation of service mesh
 
 Currently, `./service-mesh` only provide **Linkerd** as the only setup material.
 
