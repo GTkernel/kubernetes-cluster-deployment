@@ -467,11 +467,11 @@ $ sh linkerd_v2_14_1.sh
 
 ## Port forwarding for public-facing services
 
-As mentioned in the section of environement specification, my cluster only has on public IP on master,
-other nodes only has private IP.
+As mentioned in the section of environement specification, my cluster only has one public IP on master node
+(and other nodes only have private IPs).
 
-For building NAT, you can run the script `./port-forwarding/nat_rule.sh` on master. 
-It helps to create a virtual NIC with private IP, and the rules to forward the egress traffic of worker nodes to Internet.
+For building the NAT on cluster, you can run the script `./port-forwarding/nat_rule.sh` on master. 
+It helps to create a virtual NIC with a private IP and the rules to forward the egress traffic of worker nodes to Internet.
 
 On the other hand, while K8s cluster networking is built on private network,
 to expose certain K8s Service, we need to forward the traffic between public NIC/IP and private NIC/IP by ourselves 
