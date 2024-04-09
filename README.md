@@ -26,11 +26,12 @@ It is recommended to check the alternative ways for what fit better in your own 
 
 ## The installation of K8s cluster
 
-Kubernetes v1.24 officially [removes dockershim](https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/).
-For the best familiarity of our operations, we still use Docker as container runtime. 
-However, we still face issues with the integration of `cri-dockerd` and Cilium. 
-So currently, we only verified Kubernetes v1.25.0 with WeaveNet as the CNI.
-If you prefer to install other CNIs, you would need to verify the network settings or just downgrade Kubernetes installation to **v1.23**.
+Below issue got solved and verified by v1.28
+> Kubernetes v1.24 officially [removes dockershim](https://kubernetes.io/blog/2022/01/07/kubernetes-is-moving-on-from-dockershim/).
+> For the best familiarity of our operations, we still use Docker as container runtime. 
+> However, we still face issues with the integration of `cri-dockerd` and Cilium. 
+> So currently, we only verified Kubernetes v1.25.0 with WeaveNet as the CNI.
+> If you prefer to install other CNIs, you would need to verify the network settings or just downgrade Kubernetes installation to **v1.23**.
 
 <details>
 <summary>Setup steps as following:</summary>
