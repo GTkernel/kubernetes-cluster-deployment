@@ -10,3 +10,18 @@ spec:
   nfs:
     path: "/mnt/prometheus/"
     server: "143.215.128.212"
+### For volume on local disk, need to use node affinity
+### Ensure to comment out the NFS part if using the alternative one
+# persistentVolumeReclaimPolicy: Retain
+#  storageClassName: prom-storage
+#  local:
+#    path: /mnt/prom
+#  nodeAffinity:
+#    required:
+#      nodeSelectorTerms:
+#        - matchExpressions:
+#            - key: kubernetes.io/hostname
+#              operator: In
+#              values:
+#                - HOSTNAME
+      

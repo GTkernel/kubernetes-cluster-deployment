@@ -42,6 +42,7 @@ The Docker version I used is **1.5**.
 
 Next, if you plan to install Kubernetes with version higher than v1.23, you will need to install container runtime interface (CRI).
 Here, we follow the official instruction of cri-dockerd. Please refer to its [README](https://github.com/Mirantis/cri-dockerd) for the installation.
+Or, here has the Mirantis [tutorials](https://www.mirantis.com/blog/how-to-install-cri-dockerd-and-migrate-nodes-from-dockershim) can also be the reference.
 
 
 #### 1. Install commands and daemon on every node

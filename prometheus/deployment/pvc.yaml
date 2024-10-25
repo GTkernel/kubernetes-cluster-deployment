@@ -11,3 +11,5 @@ spec:
   resources:
     requests:
       storage: 10Gi
+### Need to specify a name if for local volume
+# storageClassName: prom-storage
